@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+
+    <!-- Include Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #f1f1f1;
+            display: flex;
+             flex-direction:column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        /* Form container styles */
+        form {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Input and select field styles */
+        input[type="file"], select, button {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        /* Hover effect for the button */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Select2 customization */
+        .select2-container .select2-selection--single {
+            height: 50px;
+            border: 1px solid #ddd;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .select2-selection__rendered {
+            line-height: 38px;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 50px;
+            right: 10px;
+        }
+
+        /* Progress Bar Styles */
+        .progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 20px;
+            width: 0;
+            background-color: #4CAF50;
+            text-align: center;
+            color: white;
+            border-radius: 8px;
+        }
+
+        /* Responsive design for small screens */
+        @media (max-width: 768px) {
+            form {
+                padding: 20px;
+            }
+
+            input, select, button {
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Images</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="category">Select Category:</label>
+        <select id="category" name="category">
+            <option value="nature">Nature</option>
+            <option value="animals">Animals</option>
+            <option value="technology">Technology</option>
+            <option value="gamosa">Gamosa, Gamucha</option>
+            <option value="tamul_paan">Tamul Paan</option>
+            <option value="jaapi">Jaapi</option>
+            <option value="xorai">Xorai</option>
+            <option value="mekhela_chador">Mekhela Chador</option>
+            <option value="dhoti">Dhoti</option>
+            <option value="kameez_shirt">Kameez, Shirt</option>
+            <option value="bihu">Bihu</option>
+            <option value="satriya_nritya">Satriya Nritya</option>
+            <option value="bhortal_nritya">Bhortal Nritya</option>
+            <option value="jhumur_dance">Jhumur Dance</option>
+            <option value="bagurumba">Bagurumba</option>
+            <option value="deodhani">Deodhani</option>
+            <option value="pepa">Pepa</option>
+            <option value="toka">Toka</option>
+            <option value="gogona">Gogona</option>
+            <option value="dhol">Dhol</option>
+            <option value="dogor">Dogor</option>
+            <option value="dotara">Dotara</option>
+            <option value="bhortal">Bhortal</option>
+            <option value="tokari">Tokari</option>
+            <option value="khol">Khol</option>
+            <option value="been">Been</option>
+            <option value="mridongo">Mridongo</option>
+            <option value="banhi">Banhi</option>
+            <option value="laru">Laru</option>
+            <option value="pitha">Pitha</option>
+            <option value="jaal">Jaal</option>
+            <option value="polo">Polo</option>
+            <option value="jakoi">Jakoi</option>
+            <option value="sepa">Sepa</option>
+            <option value="khaloi">Khaloi</option>
+            <option value="dheki">Dheki</option>
+        </select>
+
+        <label for="images">Select Images:</label>
+        <input type="file" id="images" name="images" multiple accept="image/*">
+
+        <button type="submit">Upload</button>
+
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </form>
+
+    <!-- Include jQuery (required by Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 with tags feature
+            $('#category').select2({
+                placeholder: "Select a category",
+                allowClear: true,
+                tags: true, // Enable adding custom options
+                tokenSeparators: [',', ' '], // Allow comma or space for tag separation
+            });
+        });
+
+        const form = document.getElementById('uploadForm');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const xhr = new XMLHttpRequest();
+
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+
+            xhr.open('POST', '/uploads', true);
+
+            xhr.upload.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    const percent = (event.loaded / event.total) * 100;
+                    progressBar.style.width = percent + '%';
+                }
+            };
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert('Files uploaded successfully!');
+                } else {
+                    alert('Error uploading files.');
+                }
+                progressContainer.style.display = 'none';
+            };
+
+            xhr.onerror = function() {
+                alert('Error uploading files.');
+                progressContainer.style.display = 'none';
+            };
+
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>
